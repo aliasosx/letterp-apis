@@ -1,0 +1,20 @@
+{
+  "name": "letterp-apis",
+  "version": "1.0.0",
+  "description": "letter-p backend apis",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "soulisack SAYYALINH",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "mysql2": "^1.6.4",
+    "restify": "^7.3.0",
+    "restify-cors-middleware": "^1.1.1",
+    "restify-errors": "^6.1.1",
+    "restify-jwt-community": "^1.0.9",
+    "sequelize": "^4.42.0"
+  }
+}
