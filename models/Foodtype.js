@@ -1,25 +1,22 @@
 const sequelize = require('../db/connectionInitializer');
 const Sequelize = require('sequelize');
 
-const Menu = sequelize.define('menu', {
-    menu_code: {
+const Foodtype = sequelize.define('foodtype', {
+    food_type: {
         type: Sequelize.STRING,
         unique: true,
         allowNull: false
     },
-    menu_name: {
+    food_type_desc: {
         type: Sequelize.STRING,
         unique: true,
         allowNull: false
     },
-    menu_link: {
+    food_type_desc_la: {
         type: Sequelize.STRING,
-        allowNull: false
-    },
-    icon: {
-        type: Sequelize.STRING,
+        unique: true,
         allowNull: false
     }
 });
-//Menu.sync({ force: true });
-module.exports = Menu;
+Foodtype.sync();
+module.exports = Foodtype;

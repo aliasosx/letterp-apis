@@ -123,13 +123,27 @@ module.exports = server => {
     });
 
     server.post('/authverify', async (req, res, next) => {
-        const token = req.body.token;
+        console.log('Authorize module');
         try {
+            const token = req.body.token;
             const token_verify = await jwt.verify(token, config.JWT_SECRET);
             res.send(token_verify);
             next();
         } catch (err) {
             return next(new errors.UnauthorizedError(err));
+        }
+    });
+    server.get('/chefs', async (req, res, next) => {
+        try {
+            const chefs = await User.findAll({
+                where: {
+                    roleId: 4
+                }
+            });
+            res.send(chefs);
+            next();
+        } catch (err) {
+            return next(new errors.InvalidContentError(err.message));
         }
     });
 

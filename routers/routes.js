@@ -7,7 +7,7 @@ const config = require('../config');
 const Menu = require('../models/Menu');
 const Tranxmenu = require('../models/Tranxmenu');
 const Company = require('../models/Company');
-
+const sequelize = require('../db/connectionInitializer');
 
 module.exports = server => {
     // Roles
@@ -169,6 +169,110 @@ module.exports = server => {
             });
         } catch (err) {
             return next(errors.InternalError(err.message));
+        }
+    });
+    // Menu 
+    server.get('/menus', async (req, res, next) => {
+        console.log(req.body);
+        try {
+            const menus = await Menu.findAll().then((menus) => {
+                res.send(menus);
+                next();
+            }).catch((err) => {
+                res.send({ status: 'failed', reason: err.message });
+                next();
+            });
+        } catch (err) {
+            return next(errors.InternalError(err.message));
+        }
+    });
+    server.get('/menus/:id', async (req, res, next) => {
+        console.log(req.body);
+        try {
+            const menus = await Menu.findById(req.params.id).then((menus) => {
+                res.send(menus);
+                next();
+            }).catch((err) => {
+                res.send({ status: 'failed', reason: err.message });
+                next();
+            });
+        } catch (err) {
+            return next(errors.InternalError(err.message));
+        }
+    });
+    server.post('/menus', async (req, res, next) => {
+        console.log(req.body);
+        const { company_code, company_name } = req.body;
+        try {
+            const menu = await Menu.create({
+                menu_code, menu_name
+            }).then(() => {
+                res.send({ status: 'success' });
+                next();
+            }).catch((err) => {
+                res.send({ status: 'failed', reason: err.message });
+                next();
+            });
+
+        } catch (err) {
+            return next(errors.InternalError(err.message));
+        }
+    });
+    server.put('/menus/:id', async (req, res, next) => {
+        console.log(req.body);
+        try {
+            const { menu_code, menu_name } = req.body;
+            const menus = await Menu.update({
+                menu_code, menu_name
+            }, {
+                    where: {
+                        id: req.params.id
+                    }
+                }).then(() => {
+                    res.send({ status: 'success' });
+                    next();
+                }).catch((err) => {
+                    res.send({ status: 'failed', reason: err.message });
+                    next();
+                });
+        } catch (err) {
+            return next(errors.InternalError(err.message));
+        }
+    });
+    server.del('/menus/:id', async (req, res, next) => {
+        console.log(req.body);
+        try {
+            const menus = await Menu.destroy({
+                where: {
+                    id: req.params.id
+                }
+            }).then(() => {
+                res.send({ status: 'success' });
+                next();
+            }).catch((err) => {
+                res.send({ status: 'failed', reason: err.message });
+                next();
+            });
+        } catch (err) {
+            return next(errors.InternalError(err.message));
+        }
+    });
+    //Menu By Role
+    server.get('/menubyuserid/:id', async (req, res, next) => {
+        console.log(req.body);
+        try {
+
+            sequelize.query('select u.username,r.role_code, r.role_name,m.menu_code,m.menu_name,m.menu_link,m.icon from letterp.users u, letterp.roles r, letterp.menus m, letterp.tranxmenus t where  u.roleId = r.id and r.id = t.roldId and t.menuId = m.id and u.id = ?',
+                { replacements: [req.params.id], type: sequelize.QueryTypes.SELECT }).then((users) => {
+                    res.send(users);
+                    next();
+                }).catch((err) => {
+                    res.send({ status: 'failed', reason: err.message });
+                    next();
+                });
+
+        } catch (err) {
+            return next(new errors.InternalError(err.message));
         }
     });
 

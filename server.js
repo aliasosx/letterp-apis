@@ -41,12 +41,13 @@ server.use(cors.actual);
 
 //Protect router
 
-server.use(rjwt({ secret: config.JWT_SECRET }).unless({ path: ['/auth', '/authverify', '/register'] }));
+server.use(rjwt({ secret: config.JWT_SECRET }).unless({ path: ['/auth', '/register', '/authverify'] }));
 
 //Routing Load
 
 require('./routers/users')(server);
 require('./routers/routes')(server);
+require('./routers/foods')(server);
 
 server.listen(config.PORT, () => {
     /*
