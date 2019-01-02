@@ -22,7 +22,7 @@ module.exports = server => {
     });
     server.get('/fooddetail', async (req, res, next) => {
         try {
-            sequelize.query('select fd.id, fd.photo, fd.food_name,fd.cost, fd.price, fd.enabled,fd.currcode,u.username, ft.food_type_desc, kt.kitchen_code ,kt.kitchen_name from food fd , foodtypes ft , kitchens kt, users u where fd.kitchenId = kt.id and fd.foodtypeId = ft.id and fd.userId = u.id', { type: sequelize.QueryTypes.SELECT })
+            sequelize.query('select fd.id, fd.photo, fd.food_name,fd.cost, fd.price, fd.enabled,fd.currcode,u.username, ft.food_type_desc, kt.kitchen_code ,kt.kitchen_name, fd.enabled_child_food from food fd , foodtypes ft , kitchens kt, users u where fd.kitchenId = kt.id and fd.foodtypeId = ft.id and fd.userId = u.id', { type: sequelize.QueryTypes.SELECT })
                 .then((foods) => {
                     res.send(foods);
                     next();
