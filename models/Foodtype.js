@@ -18,5 +18,5 @@ const Foodtype = sequelize.define('foodtype', {
         allowNull: false
     }
 });
-Foodtype.sync();
+//Foodtype.sync();
 module.exports = Foodtype;

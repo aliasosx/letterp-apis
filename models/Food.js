@@ -62,5 +62,5 @@ const Food = sequelize.define('food', {
 Food.belongsTo(FoodType);
 Food.belongsTo(Kitchen);
 Food.belongsTo(User);
-Food.sync();
+//Food.sync();
 module.exports = Food;

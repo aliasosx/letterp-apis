@@ -3,7 +3,7 @@ const Sequelize = require('sequelize');
 const config = require('./config');
 const corsMiddleware = require('restify-cors-middleware')
 const rjwt = require('restify-jwt-community');
-
+/*
 const sequelize = new Sequelize(config.MYSQL_DB, config.MYSQL_USER, config.MYSQL_PASS, {
     host: 'localhost',
     dialect: 'mysql',
@@ -17,7 +17,9 @@ const sequelize = new Sequelize(config.MYSQL_DB, config.MYSQL_USER, config.MYSQL
     },
 
 });
+*/
 
+const sequelize = require('./db/connectionInitializer');
 
 const server = restify.createServer({
     name: 'letter-p apis',
@@ -50,15 +52,7 @@ require('./routers/routes')(server);
 require('./routers/foods')(server);
 
 server.listen(config.PORT, () => {
-    /*
-    sequelize.authenticate().then(() => {
-        console.log('Connection has been established successfully.');
 
-        console.log('Server started on port ' + config.PORT);
-    }).catch(err => {
-        console.error('Unable to connect to the database:', err);
-    });
-    */
     sequelize.sync().then(() => {
         console.log('You are connected to the database successfully.');
         console.log('Server started on port ' + config.PORT);

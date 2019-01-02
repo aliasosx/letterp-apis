@@ -18,5 +18,5 @@ const Kitchen = sequelize.define('kitchen', {
         allowNull: false
     }
 });
-Kitchen.sync();
+//Kitchen.sync();
 module.exports = Kitchen;
