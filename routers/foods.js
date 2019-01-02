@@ -34,6 +34,20 @@ module.exports = server => {
             return next(new errors.InternalServerError(err.message));
         }
     });
+    server.get('/foodsbytype/:id', async (req, res, next) => {
+        try {
+            sequelize.query('select fd.id, fd.photo, fd.food_name,fd.cost, fd.price, fd.enabled,fd.currcode,u.username, ft.food_type_desc, kt.kitchen_code ,kt.kitchen_name, fd.enabled_child_food from food fd , foodtypes ft , kitchens kt, users u where fd.kitchenId = kt.id and fd.foodtypeId = ft.id and fd.userId = u.id and ft.id = ?', { replacements: [req.params.id], type: sequelize.QueryTypes.SELECT })
+                .then((foods) => {
+                    res.send(foods);
+                    next();
+                }).catch((err) => {
+                    res.send({ message: 'No records' });
+                    next();
+                });
+        } catch (err) {
+            return next(new errors.InternalServerError(err.message));
+        }
+    });
 
     server.put('/foods/:id', async (req, res, next) => {
         console.log(req.body);
