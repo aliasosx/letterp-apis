@@ -34,6 +34,35 @@ module.exports = server => {
             return next(new errors.InternalServerError(err.message));
         }
     });
+
+    server.put('/foods/:id', async (req, res, next) => {
+        console.log(req.body);
+        try {
+            const food = await Food.update(req.body, {
+                where: {
+                    id: req.params.id
+                }
+            }).then(() => {
+                res.send({ status: 'success' });
+                next();
+            }).catch((err) => {
+                res.send({ status: 'failed', reason: err.message });
+                next();
+            });
+        } catch (err) {
+            return next(new errors.InternalServerError(err.message));
+        }
+    });
+
+    server.get('/foods/:id', async (req, res, next) => {
+        try {
+            const food = await Food.findById(req.params.id);
+            res.send(food);
+            next();
+        } catch (err) {
+            return next(new errors.InternalServerError(err.message));
+        }
+    });
     server.post('/foods', async (req, res, next) => {
         console.log(req.body);
         try {
@@ -95,10 +124,6 @@ module.exports = server => {
             return next(new errors.InternalServerError(err.message));
         };
     });
-    server.put('/foods', async (req, res, next) => {
-
-    });
-
 
     // Food Type api
     server.get('/foodtypes', async (req, res, next) => {

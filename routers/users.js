@@ -4,6 +4,8 @@ const bcrypt = require('bcryptjs');
 const auth = require('../auth');
 const jwt = require('jsonwebtoken');
 const config = require('../config');
+const sequenlize = require('../db/connectionInitializer');
+
 
 module.exports = server => {
     server.get('/users', async (req, res, next) => {
@@ -135,13 +137,14 @@ module.exports = server => {
     });
     server.get('/chefs', async (req, res, next) => {
         try {
-            const chefs = await User.findAll({
-                where: {
-                    roleId: 2
-                }
+            const chefs = sequenlize.query("select u.id, username from users u , roles r where r.id = u.roleId and r.role_code='chef'", { type: sequelize.QueryTypes.SELECT }).then((chefs) => {
+                res.send(chefs);
+                next();
+            }).catch((err) => {
+                res.send({ status: err.message });
+                next();
             });
-            res.send(chefs);
-            next();
+
         } catch (err) {
             return next(new errors.InvalidContentError(err.message));
         }
