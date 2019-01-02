@@ -13,7 +13,7 @@ const Kitchen = sequelize.define('kitchen', {
         allowNull: false
     },
     userId: {
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
         unique: true,
         allowNull: false
     }

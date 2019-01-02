@@ -137,7 +137,7 @@ module.exports = server => {
         try {
             const chefs = await User.findAll({
                 where: {
-                    roleId: 4
+                    roleId: 2
                 }
             });
             res.send(chefs);

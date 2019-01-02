@@ -19,6 +19,11 @@ const Menu = sequelize.define('menu', {
     icon: {
         type: Sequelize.STRING,
         allowNull: false
+    },
+    enabled: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
     }
 });
 //Menu.sync({ force: true });

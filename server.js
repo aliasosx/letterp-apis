@@ -56,7 +56,6 @@ server.listen(config.PORT, () => {
     sequelize.sync().then(() => {
         console.log('You are connected to the database successfully.');
         console.log('Server started on port ' + config.PORT);
-
     }).catch((err) => {
         console.log(err, "Some problems with database connection!!! " + err);
     });

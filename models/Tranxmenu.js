@@ -1,8 +1,10 @@
 const sequelize = require('../db/connectionInitializer');
 const Sequelize = require('sequelize');
+const Menu = require('./Menu');
+
 
 const Tranxmenu = sequelize.define('tranxmenu', {
-    roldId: {
+    roleId: {
         type: Sequelize.INTEGER,
         allowNull: false
     },
@@ -16,5 +18,6 @@ const Tranxmenu = sequelize.define('tranxmenu', {
     }
 
 });
-//Tranxmenu.sync({ force: true });
+
+Tranxmenu.belongsTo(Menu)
 module.exports = Tranxmenu;

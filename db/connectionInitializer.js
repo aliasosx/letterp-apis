@@ -4,6 +4,7 @@ const config = require('../config');
 module.exports = sequelize = new Sequelize(config.MYSQL_DB, config.MYSQL_USER, config.MYSQL_PASS, {
     host: 'localhost',
     dialect: 'mysql',
+    database: 'letterp',
     operatorsAliases: false,
 
     pool: {

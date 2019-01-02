@@ -262,7 +262,7 @@ module.exports = server => {
         console.log(req.body);
         try {
 
-            sequelize.query('select u.username,r.role_code, r.role_name,m.menu_code,m.menu_name,m.menu_link,m.icon from letterp.users u, letterp.roles r, letterp.menus m, letterp.tranxmenus t where  u.roleId = r.id and r.id = t.roldId and t.menuId = m.id and u.id = ?',
+            sequelize.query('select u.username,r.role_code, r.role_name,m.menu_code,m.menu_name,m.menu_link,m.icon from letterp.users u, letterp.roles r, letterp.menus m, letterp.tranxmenus t where  u.roleId = r.id and r.id = t.roleId and t.menuId = m.id and m.enabled=true and u.id = ?',
                 { replacements: [req.params.id], type: sequelize.QueryTypes.SELECT }).then((users) => {
                     res.send(users);
                     next();
@@ -275,5 +275,4 @@ module.exports = server => {
             return next(new errors.InternalError(err.message));
         }
     });
-
 }
