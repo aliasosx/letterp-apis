@@ -184,6 +184,23 @@ module.exports = server => {
             return next(new errors.InternalServerError(err.message));
         }
     });
+
+    // get master food by parents
+
+    server.get('/childFood/:id', async (req, res, next) => {
+        try {
+            const foodChilds = await Food.findAll({
+                where: {
+                    parents_food_id: req.params.id
+                }
+            });
+            res.send(foodChilds);
+            next();
+        } catch (err) {
+            return next(new errors.InternalServerError(err.message));
+        }
+    });
+
     // Kitchen
     server.get('/kitchens', async (req, res, next) => {
         try {
