@@ -7,6 +7,8 @@ const config = require('../config');
 const Menu = require('../models/Menu');
 const Tranxmenu = require('../models/Tranxmenu');
 const Company = require('../models/Company');
+const Ticket = require('../models/Ticket');
+
 const sequelize = require('../db/connectionInitializer');
 
 module.exports = server => {
@@ -274,5 +276,15 @@ module.exports = server => {
         } catch (err) {
             return next(new errors.InternalError(err.message));
         }
+    });
+    server.get('/tickets', async (req, res, next) => {
+        const tickets = await Ticket.findAll({
+            where: {
+                ticket_available: true
+            }
+        }).then((tickets) => {
+            res.send(tickets);
+            next();
+        });
     });
 }

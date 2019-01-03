@@ -51,6 +51,7 @@ require('./routers/users')(server);
 require('./routers/routes')(server);
 require('./routers/foods')(server);
 require('./routers/orders')(server);
+require('./routers/customers')(server);
 
 server.listen(config.PORT, () => {
 
