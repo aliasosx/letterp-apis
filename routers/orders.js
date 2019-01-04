@@ -14,47 +14,64 @@ const Customer = require('../models/Customer');
 module.exports = server => {
     server.post('/makeorders', async (req, res, next) => {
         console.log(req.body);
-        const { quantity, total, ticketId, statusId, userId, orderdetail, customerId } = req.body;
+        const { quantity, grandtotal, ticketId, statusId, userId, orderdetail, customerId, received, change } = req.body;
         // add Order 
 
         try {
             const o = await Order.create({
-                quantity, total, ticketId, statusId, userId, customerId
+                quantity, grandtotal, ticketId, statusId, userId, customerId, received, change
             }).then((order) => {
-                console.log(order.id);
+                //console.log(JSON.parse(orderdetail));
+                console.log('-------------------- Order posted --------------------');
+                orderdetail.forEach(orderdetail => {
+                    json_order = JSON.parse(orderdetail);
+                    console.log(json_order);
+                });
+
                 // add order detail
 
                 orderdetail.forEach(orderdetail => {
+                    let orderdetail_json = JSON.parse(orderdetail);
+                    console.log(orderdetail_json);
                     const orderId = order.id;
-                    const foodId = orderdetail.foodId;
-                    const quantity = orderdetail.quantity;
-                    const price = orderdetail.price;
-                    const total = orderdetail.total;
-                    const note = orderdetail.note;
+                    const foodId = orderdetail_json.food.id;
+                    const quantity = orderdetail_json.quantity;
+                    const price = orderdetail_json.food.price;
+                    const total = orderdetail_json.quantity * orderdetail_json.food.price;
+                    const note = orderdetail_json.note;
 
                     const orderdetailNew = Orderdetail.create({
                         orderId, foodId, quantity, price, total, note
                     }).then(() => {
                         // update ticket
-                        const tk = Ticket.update({
-                            ticket_available: false
-                        }, {
-                                where: {
-                                    tick_number: ticketId
-                                }
-                            }).then(() => {
-                                res.send({ status: 'success' });
-                                next();
-                            }).catch((err) => {
-                                res.send({ status: 'failed', because: err.message });
-                                next();
-                            });
+                        console.log('-------------------- Transaction posted --------------------');
+                        // Order detail
+                    }).catch((err) => {
+                        console.log(err.message);
+                        /*
+                        res.send({ status: 'failed', because: err.message });
+                        next();
+                        */
+                    });
+                });
+
+                // Update ticket
+                const tk = Ticket.update({
+                    ticket_available: false
+                }, {
+                        where: {
+                            tick_number: ticketId
+                        }
+                    }).then(() => {
+                        console.log('-------------------- Ticket posted --------------------');
+                        res.send({ status: 'success' });
+                        next();
                     }).catch((err) => {
                         res.send({ status: 'failed', because: err.message });
                         next();
                     });
-                });
 
+                // Order
             }).catch((err) => {
                 res.send({ status: 'failed', because: err.message });
                 next();

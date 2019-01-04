@@ -55,6 +55,10 @@ const User = sequelize.define('user', {
         type: Sequelize.BOOLEAN,
         defaultValue: true,
         allowNull: false
+    },
+    firstlogin: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false
     }
 });
 User.belongsTo(Role);

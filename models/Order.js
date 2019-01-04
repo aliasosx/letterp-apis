@@ -26,7 +26,7 @@ const Order = sequelize.define('order', {
         allowNull: false,
         defaultValue: 0
     },
-    'total': {
+    'grandtotal': {
         type: Sequelize.DECIMAL,
         allowNull: false,
         defaultValue: 0,
@@ -38,6 +38,14 @@ const Order = sequelize.define('order', {
     'statusId': {
         type: Sequelize.INTEGER,
         allowNull: false
+    },
+    'received': {
+        type: Sequelize.DECIMAL,
+        defaultValue: 0
+    },
+    'change': {
+        type: Sequelize.DECIMAL,
+        defaultValue: 0
     },
     'customerId': {
         type: Sequelize.INTEGER,
