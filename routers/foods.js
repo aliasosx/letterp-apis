@@ -8,6 +8,8 @@ const sequelize = require('../db/connectionInitializer');
 const Food = require('../models/Food');
 const Foodtypes = require('../models/Foodtype');
 const Kitchen = require('../models/Kitchen');
+const uploadController = require('../controlllers/uploadControler');
+
 
 module.exports = server => {
     // Food api
@@ -241,6 +243,20 @@ module.exports = server => {
 
         } catch (err) {
             return next(new errors.InternalServerError(err.message));
+        }
+    });
+    server.post('/upload', async (req, res, next) => {
+        console.log(req.files.image);
+        if (typeof req.files.image === 'object') {
+            try {
+                const result = await uploadController.upload(req.files.image, req.body.type);
+                res.send({ status: 'success' });
+                next();
+            } catch (err) {
+                return next(new errors.InvalidContentError(err.message));
+            }
+        } else {
+            console.log('H');
         }
     });
 }

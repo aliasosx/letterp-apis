@@ -79,6 +79,14 @@ module.exports = server => {
         } catch (err) {
             return next(new errors.InternalServerError(err.message));
         }
-
+    });
+    server.get('/kitchenorders', async (req, res, next) => {
+        const kitchenorders = await sequelize.query("select t.tick_number,o.id,fd.food_name,od.quantity,od.price, od.note, st.status, st.location, o.order_datetime  from food fd , foodtypes ft , orders o , orderdetails od , statuses st , tickets t where fd.foodtypeId = ft.id and fd.id = od.foodId and o.id = od.orderId and o.statusId = st.id and t.id = o.ticketId and st.status <> 'finished' order by o.order_datetime asc", { type: sequelize.QueryTypes.SELECT })
+            .then((kitchenorders) => {
+                res.send(kitchenorders);
+                next();
+            }).catch((err) => {
+                return next(new errors.InvalidContentError(err.message));
+            });
     });
 }

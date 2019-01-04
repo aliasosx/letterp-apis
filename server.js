@@ -3,21 +3,6 @@ const Sequelize = require('sequelize');
 const config = require('./config');
 const corsMiddleware = require('restify-cors-middleware')
 const rjwt = require('restify-jwt-community');
-/*
-const sequelize = new Sequelize(config.MYSQL_DB, config.MYSQL_USER, config.MYSQL_PASS, {
-    host: 'localhost',
-    dialect: 'mysql',
-    operatorsAliases: false,
-
-    pool: {
-        max: 5,
-        min: 0,
-        acquire: 30000,
-        idle: 10000
-    },
-
-});
-*/
 
 const sequelize = require('./db/connectionInitializer');
 
@@ -43,7 +28,7 @@ server.use(cors.actual);
 
 //Protect router
 
-server.use(rjwt({ secret: config.JWT_SECRET }).unless({ path: ['/auth', '/register', '/authverify'] }));
+server.use(rjwt({ secret: config.JWT_SECRET }).unless({ path: ['/auth', '/register', '/authverify', '/uploads'] }));
 
 //Routing Load
 
@@ -52,7 +37,12 @@ require('./routers/routes')(server);
 require('./routers/foods')(server);
 require('./routers/orders')(server);
 require('./routers/customers')(server);
+//static images
 
+server.get('/uploads/*', restify.plugins.serveStatic({
+    directory: './public',
+
+}))
 server.listen(config.PORT, () => {
 
     sequelize.sync().then(() => {
