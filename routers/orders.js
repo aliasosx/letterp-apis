@@ -81,7 +81,16 @@ module.exports = server => {
         }
     });
     server.get('/kitchenorders', async (req, res, next) => {
-        const kitchenorders = await sequelize.query("select t.tick_number,o.id,fd.food_name,od.quantity,od.price, od.note, st.status, st.location, o.order_datetime  from food fd , foodtypes ft , orders o , orderdetails od , statuses st , tickets t where fd.foodtypeId = ft.id and fd.id = od.foodId and o.id = od.orderId and o.statusId = st.id and t.id = o.ticketId and st.status = 'pending' order by o.order_datetime asc", { type: sequelize.QueryTypes.SELECT })
+        const kitchenorders = await sequelize.query("select t.tick_number,o.id,fd.food_name,od.quantity,od.price, od.note, st.status, st.location, o.order_datetime  from food fd , foodtypes ft , orders o , orderdetails od , statuses st , tickets t where fd.foodtypeId = ft.id and fd.id = od.foodId and o.id = od.orderId and o.statusId = st.id and t.id = o.ticketId and st.status like '%kitchen' order by o.order_datetime asc", { type: sequelize.QueryTypes.SELECT })
+            .then((kitchenorders) => {
+                res.send(kitchenorders);
+                next();
+            }).catch((err) => {
+                return next(new errors.InvalidContentError(err.message));
+            });
+    });
+    server.get('/kitchenorders/:id', async (req, res, next) => {
+        const kitchenorders = await sequelize.query("select t.id as ticketId , t.tick_number,o.id,fd.food_name,od.quantity,od.price, od.note, st.status, st.location, o.order_datetime  from food fd , foodtypes ft , orders o , orderdetails od , statuses st , tickets t where fd.foodtypeId = ft.id and fd.id = od.foodId and o.id = od.orderId and o.statusId = st.id and t.id = o.ticketId and st.status like 'pending%' and t.id= " + req.params.id + " order by o.order_datetime asc", { type: sequelize.QueryTypes.SELECT })
             .then((kitchenorders) => {
                 res.send(kitchenorders);
                 next();
