@@ -90,7 +90,7 @@ module.exports = server => {
             });
     });
     server.get('/ordertrackings', async (req, res, next) => {
-        const ordertrackings = await sequelize.query("select o.id, t.tick_number,s.status,s.location, o.order_datetime,(now() - order_datetime) time_passed, o.grandtotal from orders o , tickets t , statuses s, users u where o.ticketId = t.id and o.statusId = s.id and s.status='pending' and u.id = o.userId order by o.order_datetime asc", { type: sequelize.QueryTypes.SELECT })
+        const ordertrackings = await sequelize.query("select o.id, t.id as ticketId ,t.tick_number,s.status,s.location, o.order_datetime,(now() - order_datetime) time_passed, o.grandtotal from orders o , tickets t , statuses s, users u where o.ticketId = t.id and o.statusId = s.id and s.status like'pending%' and u.id = o.userId order by o.order_datetime asc", { type: sequelize.QueryTypes.SELECT })
             .then((ordertrackings) => {
                 res.send(ordertrackings);
                 next();

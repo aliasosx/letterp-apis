@@ -287,4 +287,14 @@ module.exports = server => {
             next();
         });
     });
+    server.get('/ticket/:id', async (req, res, next) => {
+        const tickets = await Ticket.findAll({
+            where: {
+                id: req.params.id
+            }
+        }).then((tickets) => {
+            res.send(tickets);
+            next();
+        });
+    });
 }

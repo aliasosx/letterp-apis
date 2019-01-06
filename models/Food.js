@@ -11,6 +11,12 @@ const Food = sequelize.define('food', {
         unique: true,
         allowNull: false
     },
+    food_name_en: {
+        type: Sequelize.STRING,
+        unique: false,
+        allowNull: true
+    }
+    ,
     parents_food_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
