@@ -3,9 +3,12 @@ const Sequelize = require('sequelize');
 const config = require('./config');
 const corsMiddleware = require('restify-cors-middleware')
 const rjwt = require('restify-jwt-community');
-
+const fs = require('fs');
 const sequelize = require('./db/connectionInitializer');
-
+const https_ops = {
+    key: fs.readFileSync('./certs/ssl/server.key'),
+    certificate: fs.readFileSync('./certs/ssl/server.cert')
+}
 const server = restify.createServer({
     name: 'letter-p apis',
     version: '2.0.0'
@@ -38,6 +41,7 @@ require('./routers/foods')(server);
 require('./routers/orders')(server);
 require('./routers/customers')(server);
 //static images
+
 
 server.get('/uploads/*', restify.plugins.serveStatic({
     directory: './public',
