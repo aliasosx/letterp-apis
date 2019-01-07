@@ -91,7 +91,13 @@ module.exports = server => {
             });
     });
     server.get('/kitchenordersByKid/:id', async (req, res, next) => {
-        const kitchenorders = await sequelize.query("select t.tick_number,o.id,fd.food_name,od.full_food_name,od.quantity,od.price, od.note, st.status, st.location, o.order_datetime  from food fd , foodtypes ft , orders o , orderdetails od , statuses st , tickets t where fd.foodtypeId = ft.id and fd.id = od.foodId and o.id = od.orderId and o.statusId = st.id and t.id = o.ticketId and st.status like '%kitchen' and fd.kitchenId = " + req.params.id + " order by o.order_datetime asc", { type: sequelize.QueryTypes.SELECT })
+        let sql;
+        if (req.params.id == 0) {
+            sql = "select t.tick_number,o.id,fd.food_name,od.full_food_name,od.quantity,od.price, od.note, st.status, st.location, o.order_datetime  from food fd , foodtypes ft , orders o , orderdetails od , statuses st , tickets t where fd.foodtypeId = ft.id and fd.id = od.foodId and o.id = od.orderId and o.statusId = st.id and t.id = o.ticketId and st.status like '%kitchen' order by o.order_datetime asc";
+        } else {
+            sql = "select t.tick_number,o.id,fd.food_name,od.full_food_name,od.quantity,od.price, od.note, st.status, st.location, o.order_datetime  from food fd , foodtypes ft , orders o , orderdetails od , statuses st , tickets t where fd.foodtypeId = ft.id and fd.id = od.foodId and o.id = od.orderId and o.statusId = st.id and t.id = o.ticketId and st.status like '%kitchen' and fd.kitchenId = " + req.params.id + " order by o.order_datetime asc";
+        }
+        const kitchenorders = await sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
             .then((kitchenorders) => {
                 res.send(kitchenorders);
                 next();
