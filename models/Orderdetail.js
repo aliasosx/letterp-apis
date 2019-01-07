@@ -13,6 +13,10 @@ const Orderdetail = sequelize.define('orderdetail', {
         type: Sequelize.INTEGER,
         allowNull: false
     },
+    'full_food_name': {
+        type: Sequelize.STRING,
+        allowNull: true
+    },
     'quantity': {
         type: Sequelize.INTEGER,
         allowNull: false
