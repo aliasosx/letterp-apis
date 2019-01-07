@@ -297,4 +297,16 @@ module.exports = server => {
             next();
         });
     });
+    server.get('/kitchenIdByUser/:id', async (req, res, next) => {
+        const kid = sequelize.query('select r.kitchenId from users u , roles r where u.roleId = r.id and u.id = ?', { replacements: [req.params.id], type: sequelize.QueryTypes.SELECT })
+            .then(resp => {
+                res.send(resp);
+                next();
+            }).catch((err) => {
+                return next(new errors.InternalError(err.message));
+            });
+
+
+    });
+
 }
