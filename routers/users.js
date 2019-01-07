@@ -46,7 +46,41 @@ module.exports = server => {
             return next(new errors.InternalError(err.message));
         }
     });
+    server.put('/changepassword/:id', async (req, res, next) => {
+        try {
+            const { password } = req.body;
+            const user = new User({
+                password
+            });
+            bcrypt.genSalt(10, (err, salt) => {
+                bcrypt.hash(user.password, salt, async (err, hash) => {
+                    user.password = hash;
+                    console.log(user.password);
+                    try {
+                        const userx = await User.update({
+                            password: user.password,
+                            firstlogin: false
+                        }, {
+                                where: {
+                                    id: req.params.id
+                                }
+                            });
+                        res.send({ status: 'success' });
+                        next();
+                    } catch (err) {
+                        console.log(err);
+                        return next(new errors.InvalidContentError(err.message));
+                    }
+                });
 
+            });
+        } catch (err) {
+            console.log(err);
+            return next(new errors.InternalError(err.message));
+        }
+
+
+    });
     server.del('/users/:id', async (req, res, next) => {
         try {
             //const user = await User.findOneAndRemove({ _id: req.params.id });
@@ -149,8 +183,19 @@ module.exports = server => {
             return next(new errors.InvalidContentError(err.message));
         }
     });
+    server.get('/firstlogin/:id', async (req, res, next) => {
+        try {
+            const user = await User.findById(req.params.id).then(user => {
+                res.send(user);
+                next();
+            }).catch((err) => {
+                res.send({ status: err.message });
+                next();
+            });
 
-
-
+        } catch (err) {
+            return next(new errors.InvalidContentError(err.message));
+        }
+    });
 
 }
