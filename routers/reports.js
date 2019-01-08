@@ -28,4 +28,15 @@ module.exports = server => {
             res.send(new errors.InternalError(err.message));
         }
     });
+    server.get('/reporttopfood/:id', async (req, res, next) => {
+        try {
+            let sql = "select fd.food_name, count(*) as count, sum(fd.price) total from food fd , orders o , orderdetails ot where fd.id = ot.foodId and ot.orderId = o.id and o.statusId = 2 and date(o.order_datetime) = date(now()) group by  fd.id order by  count(*) desc limit " + req.params.id;
+            const r = await sequelize.query(sql, { type: sequelize.QueryTypes.SELECT }).then(r => {
+                res.send(r);
+                next();
+            })
+        } catch (err) {
+            res.send(new errors.InternalError(err.message));
+        }
+    });
 }
