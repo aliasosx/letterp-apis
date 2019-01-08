@@ -100,6 +100,7 @@ module.exports = server => {
         try {
             const {
                 food_name,
+                food_name_en,
                 parents_food_id,
                 photo,
                 foodtypeId,
@@ -115,6 +116,7 @@ module.exports = server => {
             } = req.body;
             const addNewFood = await Food.create({
                 food_name,
+                food_name_en,
                 parents_food_id,
                 photo,
                 foodtypeId,
