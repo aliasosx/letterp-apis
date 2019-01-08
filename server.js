@@ -40,6 +40,7 @@ require('./routers/routes')(server);
 require('./routers/foods')(server);
 require('./routers/orders')(server);
 require('./routers/customers')(server);
+require('./routers/reports')(server);
 //static images
 
 
