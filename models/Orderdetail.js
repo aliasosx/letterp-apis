@@ -32,6 +32,11 @@ const Orderdetail = sequelize.define('orderdetail', {
     'note': {
         type: Sequelize.STRING,
         allowNull: true
+    },
+    'done': {
+        type: Sequelize.BOOLEAN,
+        allowNull: true,
+        defaultValue: false
     }
 });
 Orderdetail.belongsTo(Food);

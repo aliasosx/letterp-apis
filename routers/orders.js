@@ -106,7 +106,7 @@ module.exports = server => {
             });
     });
     server.get('/kitchenorders/:id', async (req, res, next) => {
-        const kitchenorders = await sequelize.query("select t.id as ticketId , t.tick_number,o.id,fd.food_name,od.full_food_name,od.quantity,od.price, od.note, st.status, st.location, o.order_datetime  from food fd , foodtypes ft , orders o , orderdetails od , statuses st , tickets t where fd.foodtypeId = ft.id and fd.id = od.foodId and o.id = od.orderId and o.statusId = st.id and t.id = o.ticketId and st.status like 'pending%' and t.id= " + req.params.id + " order by o.order_datetime asc", { type: sequelize.QueryTypes.SELECT })
+        const kitchenorders = await sequelize.query("select t.id as ticketId , t.tick_number,o.id,od.id detailId,fd.food_name,od.full_food_name,od.quantity,od.price, od.note, st.status, st.location, o.order_datetime,od.done  from food fd , foodtypes ft , orders o , orderdetails od , statuses st , tickets t where fd.foodtypeId = ft.id and fd.id = od.foodId and o.id = od.orderId and o.statusId = st.id and t.id = o.ticketId and st.status like 'pending%' and t.id= " + req.params.id + " order by o.order_datetime asc", { type: sequelize.QueryTypes.SELECT })
             .then((kitchenorders) => {
                 res.send(kitchenorders);
                 next();
@@ -150,6 +150,21 @@ module.exports = server => {
                     res.send({ status: 'failed', reason: err.message });
                     next();
                 });
+        } catch (err) {
+            return next(new errors.InternalError(err.message));
+        }
+    });
+    server.post('/maketransactionfinish', async (req, res, next) => {
+        const { orderdetailId, value } = req.body;
+        try {
+            const c = await Orderdetail.update({
+                'id': orderdetailId,
+                'done': value
+            }).then(resp => {
+                res.send({ status: 'success' });
+                next();
+            });
+
         } catch (err) {
             return next(new errors.InternalError(err.message));
         }
