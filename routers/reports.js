@@ -74,4 +74,15 @@ module.exports = server => {
             res.send(new errors.InternalError(err.message));
         }
     });
+    server.post('/adminreportbyuser', async (req, res, next) => {
+        try {
+            let sql = "select  u.username, count(*) count,sum(ot.total) as total from orders o, users u , orderdetails ot where o.userId = u.id and o.id = ot.orderId and date(o.order_datetime) = date('" + req.body.dt + "') and o.statusId=2 group by u.id  order by  count(*) desc ";
+            const r = await sequelize.query(sql, { type: sequelize.QueryTypes.SELECT }).then(r => {
+                res.send(r);
+                next();
+            })
+        } catch (err) {
+            res.send(new errors.InternalError(err.message));
+        }
+    });
 }
