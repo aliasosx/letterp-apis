@@ -41,6 +41,7 @@ require('./routers/foods')(server);
 require('./routers/orders')(server);
 require('./routers/customers')(server);
 require('./routers/reports')(server);
+require('./routers/cashloads')(server);
 //static images
 
 

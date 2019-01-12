@@ -13,4 +13,5 @@ module.exports = sequelize = new Sequelize(config.MYSQL_DB, config.MYSQL_USER, c
         acquire: 30000,
         idle: 10000
     },
+    timezone: '+07:00'
 });

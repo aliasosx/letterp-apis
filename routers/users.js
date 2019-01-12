@@ -1,11 +1,12 @@
 const errors = require('restify-errors');
+const Sequelize = require('sequelize');
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const auth = require('../auth');
 const jwt = require('jsonwebtoken');
 const config = require('../config');
 const sequenlize = require('../db/connectionInitializer');
-
+const Op = Sequelize.Op;
 
 module.exports = server => {
     server.get('/users', async (req, res, next) => {
@@ -14,6 +15,27 @@ module.exports = server => {
             res.send(users);
             next();
         } catch (err) {
+            return next(errors.InternalError(err.message));
+        }
+    });
+
+    server.get('/usersnotin/:id', async (req, res, next) => {
+        try {
+            console.log(req.params.id)
+            const users = await User.findAll({
+                where: {
+                    id: {
+                        [Op.ne]: req.params.id
+                    },
+                    enabled: true
+                }
+            }).then(resp => {
+                res.send(resp);
+                next();
+            });
+
+        } catch (err) {
+            console.log(err)
             return next(errors.InternalError(err.message));
         }
     });

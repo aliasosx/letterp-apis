@@ -33,9 +33,17 @@ const Cashload = sequelize.define('cashload', {
         type: Sequelize.INTEGER,
         allowNull: false
     },
-    checkerId: {
+    loadcheckerId: {
         type: Sequelize.INTEGER,
         allowNull: true
+    },
+    closecheckerId: {
+        type: Sequelize.INTEGER,
+        allowNull: true
+    },
+    loaded: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false
     }
 });
 module.exports = Cashload;

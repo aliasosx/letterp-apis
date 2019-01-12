@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "dateformat": "^3.0.3",
     "mv": "^2.1.1",
     "mysql2": "^1.6.4",
     "restify": "^7.3.0",

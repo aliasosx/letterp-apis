@@ -54,6 +54,11 @@ const Order = sequelize.define('order', {
     'userId': {
         type: Sequelize.INTEGER,
         allowNull: false
+    },
+    'settled': {
+        type: Sequelize.BOOLEAN,
+        allowNull: true,
+        defaultValue: false
     }
 });
 Order.belongsTo(User);
