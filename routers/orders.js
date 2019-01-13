@@ -176,4 +176,17 @@ module.exports = server => {
             return next(new errors.InternalError(err.message));
         }
     });
+    server.get('/notesuggests', async (req, res, next) => {
+        try {
+            const s = await sequelize.query('select distinct(note) notes,count(*) from orderdetails where note is not null group by note order by count(*) desc', { type: sequelize.QueryTypes.SELECT }).then((resp) => {
+                res.send(resp);
+                next();
+            }).catch((err) => {
+                res.send({ status: 'fail', reason: err.message });
+                next();
+            });
+        } catch (err) {
+            return next(new errors.InternalError(err.message));
+        }
+    });
 }
