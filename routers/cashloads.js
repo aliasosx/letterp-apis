@@ -47,34 +47,75 @@ module.exports = server => {
             return next(new errors.InternalError(err.message));
         }
     });
+    server.put('/eod/:id', async (req, res, next) => {
+        try {
+            const {
+                saleamount,
+                closeamount,
+                balance,
+                closecheckerId,
+                note
+            } = req.body;
+            const loaddatetime = Date.now();
+
+            const c = await Cashload.update({
+                saleamount: saleamount,
+                closeamount: closeamount,
+                balance: balance, closecheckerId: closecheckerId,
+                note: note,
+                cleared: true
+            }, {
+                    where: {
+                        id: req.params.id
+                    }
+                }).then(() => {
+                    res.send({ status: 'success' });
+                    next();
+                }).catch((err) => {
+                    res.send({ status: 'fail', reason: err.message });
+                    next();
+                });
+        } catch (err) {
+            return next(new errors.InternalError(err.message));
+        }
+    });
+
+
     server.get('/settle/:id', async (req, res, next) => {
         const currentDate = df(new Date, "yyyy-mm-dd");
         console.log(currentDate)
 
         try {
             const o = await sequelize.query('update orders set settled=true where userId=' + req.params.id + ' and date(order_datetime) = date(now()) and settled=false',
-                { type: sequelize.QueryTypes.UPDATE }).then(async () => {
-                    const c = await Cashload.update({
-                        closed: true,
-                        closedatetime: new Date()
-                    }, {
-                            where: {
-                                userId: req.params.id,
-                                closed: false
-                            }
-                        }).then(async () => {
-                            const summary = await sequelize.query('select count(*) count, sum(od.price) total from orders o , orderdetails od where o.id = od.orderId and o.userId=' + req.params.id + ' and date(o.order_datetime) = date(now()) and o.settled=true',
-                                { type: sequelize.QueryTypes.SELECT }).then((resp) => {
-                                    console.log(resp);
-                                    res.send(resp);
-                                    next();
-                                }).catch((err) => {
-                                    console.log(err);
-                                });
+                { type: sequelize.QueryTypes.UPDATE }).then(async (resp) => {
+                    console.log(resp[1]);
+                    if (resp[1] != 0) {
+                        const c = await Cashload.update({
+                            closed: true,
+                            closedatetime: new Date()
+                        }, {
+                                where: {
+                                    userId: req.params.id,
+                                    closed: false
+                                }
+                            }).then(async () => {
+                                const summary = await sequelize.query('select count(*) count, sum(od.price) total from orders o , orderdetails od where o.id = od.orderId and o.userId=' + req.params.id + ' and date(o.order_datetime) = date(now()) and o.settled=true',
+                                    { type: sequelize.QueryTypes.SELECT }).then((resp) => {
+                                        console.log(resp);
+                                        res.send(resp);
+                                        next();
+                                    }).catch((err) => {
+                                        console.log(err);
+                                    });
 
-                        }).catch((err) => {
-                            console.log(err);
-                        });
+                            }).catch((err) => {
+                                console.log(err);
+                            });
+                    } else {
+                        res.send({ status: 'no transactions yet', 0: { total: 0, count: 0 } });
+                        next();
+                    }
+
                 }).catch((err) => {
                     console.log(err);
                 });
