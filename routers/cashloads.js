@@ -99,7 +99,7 @@ module.exports = server => {
                                     closed: false
                                 }
                             }).then(async () => {
-                                const summary = await sequelize.query('select count(*) count, sum(od.price) total from orders o , orderdetails od where o.id = od.orderId and o.userId=' + req.params.id + ' and date(o.order_datetime) = date(now()) and o.settled=true',
+                                const summary = await sequelize.query('select count(*) count, sum(o.grandtotal) total from orders o where o.userId=' + req.params.id + ' and date(o.order_datetime) = date(now()) and statusId=2 and o.settled=true',
                                     { type: sequelize.QueryTypes.SELECT }).then((resp) => {
                                         console.log(resp);
                                         res.send(resp);
