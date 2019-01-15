@@ -69,6 +69,7 @@ module.exports = server => {
             const r = await sequelize.query(sql, { type: sequelize.QueryTypes.SELECT }).then(r => {
                 res.send(r);
                 next();
+
             })
         } catch (err) {
             res.send(new errors.InternalError(err.message));
