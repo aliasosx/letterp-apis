@@ -31,7 +31,7 @@ module.exports = server => {
     });
     server.post('/reporttopfood', async (req, res, next) => {
         try {
-            let sql = "select ot.full_food_name food_name, ot.quantity as count,sum(fd.cost * ot.quantity) cost, sum(fd.price*ot.quantity) total from food fd , orders o , orderdetails ot where fd.id = ot.foodId and ot.orderId = o.id and o.statusId = 2 and date(o.order_datetime) = date('" + req.body.dt + "') and fd.kitchenId='" + req.body.kitchen + "' group by fd.id order by count desc ";
+            let sql = "select ot.full_food_name food_name, sum(ot.quantity) as count,sum(fd.cost * ot.quantity) cost, sum(fd.price*ot.quantity) total from food fd , orders o , orderdetails ot where fd.id = ot.foodId and ot.orderId = o.id and o.statusId = 2 and date(o.order_datetime) = date('" + req.body.dt + "') and fd.kitchenId='" + req.body.kitchen + "' group by fd.id order by count desc ";
             const r = await sequelize.query(sql, { type: sequelize.QueryTypes.SELECT }).then(r => {
                 res.send(r);
                 next();
