@@ -65,7 +65,8 @@ module.exports = server => {
             const c = await Cashload.update({
                 saleamount: saleamount,
                 closeamount: closeamount,
-                balance: balance, closecheckerId: closecheckerId,
+                balance: balance,
+                closecheckerId: closecheckerId,
                 note: note,
                 cleared: true
             }, {

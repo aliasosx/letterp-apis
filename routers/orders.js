@@ -123,6 +123,14 @@ module.exports = server => {
                 return next(new errors.InvalidContentError(err.message));
             });
     });
+    server.get('/orderByday', async (req, res, next) => {
+        const ordertrackingByDay = await sequelize.query("select o.id, t.id as ticketId ,t.tick_number,s.status,s.location, o.order_datetime,(now() - order_datetime) time_passed, o.grandtotal,u.username from orders o , tickets t , statuses s, users u where o.ticketId = t.id and o.statusId = s.id and u.id = o.userId and date(o.order_datetime)=date(now()) order by o.order_datetime asc", { type: sequelize.QueryTypes.SELECT }).then(resp => {
+            res.send(resp);
+            next();
+        }).catch((err) => {
+            return next(new errors.InvalidContentError(err.message));
+        });
+    });
     server.put('/orders/:id', async (req, res, next) => {
         try {
             const { statusId, finish_datetime, ticketId } = req.body;
@@ -154,6 +162,26 @@ module.exports = server => {
             return next(new errors.InternalError(err.message));
         }
     });
+
+    server.put('/reverseOrder/:id', async (req, res, next) => {
+        try {
+            const ReverseOrderById = await Order.update(req.body, {
+                where: {
+                    id: req.params.id,
+                    settled: false
+                }
+            }).then(() => {
+                res.send({ status: 'success' });
+                next();
+            }).catch((err) => {
+                res.send({ status: 'fail', reason: err.message });
+                next();
+            });
+        } catch (err) {
+            return next(new errors.InternalError(err.message));
+        };
+    });
+
     server.post('/maketransactionfinish', async (req, res, next) => {
         const { orderdetailId, value } = req.body;
         console.log(req.body);
