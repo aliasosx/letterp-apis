@@ -52,6 +52,10 @@ const Cashload = sequelize.define('cashload', {
     cleared: {
         type: Sequelize.BOOLEAN,
         allowNull: true
+    },
+    cashloaddate: {
+        type: Sequelize.DATEONLY,
+        allowNull: true
     }
 });
 module.exports = Cashload;

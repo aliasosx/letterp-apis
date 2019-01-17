@@ -11,14 +11,17 @@ const Order = require('../models/Order');
 module.exports = server => {
     server.post('/getcashloadsByUser', async (req, res, next) => {
         const { userId } = req.body;
+        console.log(df(new Date, "yyyy-mm-dd"));
         try {
             const cashstatus = await Cashload.findAll({
                 where: {
                     userId: userId,
                     loaded: true,
-                    closed: false
+                    closed: false,
+                    cashloaddate: df(new Date, "yyyy-mm-dd")
                 }
             });
+            console.log(cashstatus);
             res.send(cashstatus);
             next();
         } catch (err) {
@@ -40,6 +43,7 @@ module.exports = server => {
                 loaddatetime,
                 loadcheckerId,
                 loaded,
+                cashloaddate: df(new Date, "yyyy-mm-dd"),
             }).then(resp => {
                 res.send({ status: 'success' });
             });
