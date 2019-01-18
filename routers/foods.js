@@ -215,7 +215,8 @@ module.exports = server => {
         try {
             const foodChilds = await Food.findAll({
                 where: {
-                    parents_food_id: req.params.id
+                    parents_food_id: req.params.id,
+                    enabled: true
                 }
             });
             res.send(foodChilds);
