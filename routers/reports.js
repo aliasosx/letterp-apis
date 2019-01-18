@@ -86,4 +86,60 @@ module.exports = server => {
             res.send(new errors.InternalError(err.message));
         }
     });
+    // Chart
+    server.post('/sale_volume', async (req, res, next) => {
+        try {
+            const s = await sequelize.query("select ft.food_type_desc,ft.food_type_desc_la,sum(ot.quantity) qty, sum(fd.price * ot.quantity) as Total from orderdetails ot , food fd , foodtypes ft, orders o where fd.id = ot.foodId and fd.foodtypeId = ft.id and ot.orderId = o.id and date(o.order_datetime) between date('" + req.body.dt + "') and date('" + req.body.edt + "') and o.statusId = 2 and fd.kitchenId=2 group by ft.food_type_desc", { type: sequelize.QueryTypes.SELECT }).then(resp => {
+                res.send(resp);
+                next();
+            }).catch((err) => {
+                res.send(err.message);
+                next();
+            });
+        } catch (err) {
+            return next(new errors.InternalError(err.message));
+        }
+    });
+    server.post('/sale_by_food', async (req, res, next) => {
+        let sql = "select fd.food_name,sum(ot.quantity) qty, sum(fd.price * ot.quantity) as Total from orderdetails ot , food fd , foodtypes ft, orders o where fd.id = ot.foodId and fd.foodtypeId = ft.id and ot.orderId = o.id and o.statusId = 2 and date(o.order_datetime) between date('" + req.body.dt + "') and date('" + req.body.edt + "') and fd.kitchenId=2  group by fd.food_name";
+        try {
+            const s = await sequelize.query(sql, { type: sequelize.QueryTypes.SELECT }).then(resp => {
+                res.send(resp);
+                next();
+            }).catch((err) => {
+                res.send(err.message);
+                next();
+            });
+        } catch (err) {
+            return next(new errors.InternalError(err.message));
+        }
+    });
+    server.post('/sale_by_users', async (req, res, next) => {
+        let sql = "select u.username,sum(ot.quantity) qty, sum(fd.price * ot.quantity) as Total from users u ,orderdetails ot , food fd , foodtypes ft, orders o where o.userId = u.id and fd.id = ot.foodId and fd.foodtypeId = ft.id and ot.orderId = o.id and o.statusId = 2 and date(o.order_datetime) between date('" + req.body.dt + "') and date('" + req.body.edt + "') and fd.kitchenId=2  group by u.username";
+        try {
+            const s = await sequelize.query(sql, { type: sequelize.QueryTypes.SELECT }).then(resp => {
+                res.send(resp);
+                next();
+            }).catch((err) => {
+                res.send(err.message);
+                next();
+            });
+        } catch (err) {
+            return next(new errors.InternalError(err.message));
+        }
+    });
+    server.post('/sale_by_day', async (req, res, next) => {
+        let sql = "select date(o.order_datetime) order_date,sum(ot.quantity) qty, sum(fd.price * ot.quantity) as Total from users u ,orderdetails ot , food fd , foodtypes ft, orders o where o.userId = u.id and fd.id = ot.foodId and fd.foodtypeId = ft.id and ot.orderId = o.id and o.statusId = 2 and date(o.order_datetime) between date('" + req.body.dt + "') and date('" + req.body.edt + "') and fd.kitchenId=2  group by order_date order by order_date asc";
+        try {
+            const s = await sequelize.query(sql, { type: sequelize.QueryTypes.SELECT }).then(resp => {
+                res.send(resp);
+                next();
+            }).catch((err) => {
+                res.send(err.message);
+                next();
+            });
+        } catch (err) {
+            return next(new errors.InternalError(err.message));
+        }
+    });
 }
