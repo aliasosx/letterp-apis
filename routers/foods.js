@@ -15,7 +15,11 @@ module.exports = server => {
     // Food api
     server.get('/foods', async (req, res, next) => {
         try {
-            const foods = await Food.findAll();
+            const foods = await Food.findAll({
+                where: {
+                    enabled: true
+                }
+            });
             res.send(foods);
             next();
         } catch (err) {
@@ -25,7 +29,7 @@ module.exports = server => {
 
     server.get('/fooddetail', async (req, res, next) => {
         try {
-            sequelize.query('select fd.id, fd.photo, fd.food_name,fd.cost, fd.price, fd.enabled,fd.currcode,u.username, ft.food_type_desc, kt.kitchen_code ,kt.kitchen_name, fd.enabled_child_food from food fd , foodtypes ft , kitchens kt, users u where fd.kitchenId = kt.id and fd.foodtypeId = ft.id and fd.userId = u.id', { type: sequelize.QueryTypes.SELECT })
+            sequelize.query('select fd.id, fd.photo, fd.food_name,fd.cost, fd.price, fd.enabled,fd.currcode,u.username, ft.food_type_desc, kt.kitchen_code ,kt.kitchen_name, fd.enabled_child_food from food fd , foodtypes ft , kitchens kt, users u where fd.kitchenId = kt.id and fd.foodtypeId = ft.id and fd.userId = u.id and fd.enabled = true', { type: sequelize.QueryTypes.SELECT })
                 .then((foods) => {
                     res.send(foods);
                     next();
@@ -40,7 +44,7 @@ module.exports = server => {
 
     server.get('/fooddetailmasteronly', async (req, res, next) => {
         try {
-            sequelize.query('select fd.id, fd.photo, fd.food_name,fd.food_name_en,fd.cost, fd.price, fd.enabled,fd.currcode,u.username, ft.food_type_desc, kt.kitchen_code ,kt.kitchen_name, fd.enabled_child_food from food fd , foodtypes ft , kitchens kt, users u where fd.kitchenId = kt.id and fd.foodtypeId = ft.id and fd.userId = u.id and fd.parents_food_id = 0', { type: sequelize.QueryTypes.SELECT })
+            sequelize.query('select fd.id, fd.photo, fd.food_name,fd.food_name_en,fd.cost, fd.price, fd.enabled,fd.currcode,u.username, ft.food_type_desc, kt.kitchen_code ,kt.kitchen_name, fd.enabled_child_food from food fd , foodtypes ft , kitchens kt, users u where fd.kitchenId = kt.id and fd.foodtypeId = ft.id and fd.userId = u.id and fd.parents_food_id = 0 and fd.enabled = true', { type: sequelize.QueryTypes.SELECT })
                 .then((foods) => {
                     res.send(foods);
                     next();
@@ -54,7 +58,7 @@ module.exports = server => {
     });
     server.get('/foodsbytype/:id', async (req, res, next) => {
         try {
-            sequelize.query('select fd.id, fd.photo, fd.food_name,fd.food_name_en,fd.cost, fd.price, fd.enabled,fd.currcode,u.username, ft.food_type_desc, kt.kitchen_code ,kt.kitchen_name, fd.enabled_child_food from food fd , foodtypes ft , kitchens kt, users u where fd.kitchenId = kt.id and fd.foodtypeId = ft.id and fd.userId = u.id and fd.parents_food_id = 0 and ft.id = ?', { replacements: [req.params.id], type: sequelize.QueryTypes.SELECT })
+            sequelize.query('select fd.id, fd.photo, fd.food_name,fd.food_name_en,fd.cost, fd.price, fd.enabled,fd.currcode,u.username, ft.food_type_desc, kt.kitchen_code ,kt.kitchen_name, fd.enabled_child_food from food fd , foodtypes ft , kitchens kt, users u where fd.kitchenId = kt.id and fd.foodtypeId = ft.id and fd.userId = u.id and fd.parents_food_id = 0 and fd.enabled = true and ft.id = ?', { replacements: [req.params.id], type: sequelize.QueryTypes.SELECT })
                 .then((foods) => {
                     res.send(foods);
                     next();
