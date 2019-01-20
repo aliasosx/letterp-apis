@@ -35,3 +35,4 @@ const Vendor = sequelize.define('vendor', {
     }
 });
 Vendor.belongsTo(User);
+module.exports = Vendor;

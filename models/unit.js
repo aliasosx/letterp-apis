@@ -16,6 +16,11 @@ const Unit = sequelize.define('unit', {
     userId: {
         type: Sequelize.INTEGER,
         allowNull: false
+    },
+    enabled: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
     }
 });
 Unit.belongsTo(User);

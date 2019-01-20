@@ -49,6 +49,25 @@ const Product = sequelize.define('product', {
     enabled: {
         type: Sequelize.BOOLEAN,
         allowNull: false
+    },
+    cost: {
+        type: Sequelize.DECIMAL,
+        allowNull: false,
+        defaultValue: 0
+    },
+    initQuantity: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: 0
+    },
+    currentQuantity: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: 0
+    },
+    expiryDate: {
+        type: Sequelize.DATE,
+        allowNull: true
     }
 });
 Product.belongsTo(User);
