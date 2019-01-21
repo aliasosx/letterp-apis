@@ -8,6 +8,8 @@ const Producttype = require('../models/Producttype');
 const Vendor = require('../models/vendor');
 const Product = require('../models/product');
 const Unit = require('../models/unit');
+const Stock = require('../models/stock');
+const Stocktracking = require('../models/Stocktracking');
 
 module.exports = server => {
     server.get('/producttypes', async (req, res, next) => {
@@ -82,13 +84,55 @@ module.exports = server => {
             return next(new errors.InternalError(err.message));
         }
     });
-    server.post('/products', async (req, res, next) => {
 
+    // add new product
+    server.post('/products', async (req, res, next) => {
         try {
-            let c = await Product.create(req.body).then(resp => {
-                res.send({ status: 'success' });
-                next();
+            let c = await Product.create(req.body).then(async (resp) => {
+                // add stock
+                let m = await Stock.create({
+                    'productId': resp.dataValues.id,
+                    'stockDate': resp.dataValues.createdAt,
+                    'quantity': resp.dataValues.initQuantity,
+                    'currentQuantity': resp.dataValues.currentQuantity,
+                    'expiryDate': resp.dataValues.expiryDate,
+                    'descriptions': 'new product added',
+                    'userId': resp.dataValues.userId
+                }).then(async (resps) => {
+                    // add new stocktracking
+                    let n = await Stocktracking.create({
+                        'stockId': resps.dataValues.id,
+                        'beforeQuantity': resps.dataValues.quantity,
+                        'used': 0,
+                        'userId': resps.dataValues.userId
+                    }).then(respst => {
+                        res.send({ status: 'success' });
+                        next();
+                    }).catch((err) => {
+                        console.log(err);
+                        Product.destroy({
+                            where: {
+                                id: resp.dataValues.id
+                            }
+                        });
+                        Stock.destroy({
+                            where: {
+                                id: resps.dataValues.id
+                            }
+                        })
+                    });
+
+                }).catch((err) => {
+
+                    Product.destroy({
+                        where: {
+                            id: resp.dataValues.id
+                        }
+                    });
+                    console.log(err);
+                });
             }).catch((err) => {
+                console.log(err);
                 res.send({ status: 'fail', resason: err });
                 next();
             });
@@ -96,6 +140,29 @@ module.exports = server => {
             return next(new errors.InternalError(err));
         }
     });
+    // End add new stock
+
+    server.get('/stocks/:prodId', async (req, res, next) => {
+        try {
+            const c = await Stock.findAll({
+                where: {
+                    enabled: true,
+                    productId: req.params.prodId
+                }
+            }).then(resp => {
+                console.log(resp);
+                res.send(resp);
+                next();
+            }).catch((err) => {
+                console.log(err);
+            });
+        } catch (err) {
+            return next(new errors.InternalError(err.message));
+        }
+    });
+
+
+    // Update Stock information 
     server.put('/products/:id', async (req, res, next) => {
         try {
             let c = await Product.update(req.body, {

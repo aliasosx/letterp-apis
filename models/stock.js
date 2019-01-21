@@ -33,6 +33,10 @@ const Stock = sequelize.define('stock', {
     userId: {
         type: Sequelize.INTEGER,
         allowNull: false,
+    },
+    descriptions: {
+        type: Sequelize.STRING,
+        allowNull: true,
     }
 });
 Stock.belongsTo(User);
