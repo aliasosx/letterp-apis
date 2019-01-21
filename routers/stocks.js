@@ -160,8 +160,6 @@ module.exports = server => {
             return next(new errors.InternalError(err.message));
         }
     });
-
-
     // Update Stock information 
     server.put('/products/:id', async (req, res, next) => {
         try {
@@ -178,6 +176,46 @@ module.exports = server => {
                 next();
             });
         } catch (err) {
+            return next(new errors.InternalError(err));
+        }
+    });
+
+    server.put('/stocktrackings/:id', async (req, res, next) => {
+        console.log(req.body);
+        const quantity = 0;
+        try {
+            let s = await Stock.findAll({
+                where: {
+                    productId: req.params.id
+                }
+            }).then(async (resp) => {
+                if (resp) {
+                    if (req.body.used > resp.dataValues.currentQuantity) {
+                        quantity = (req.body.used) * (-1);
+                    } else {
+
+                    }
+                    let c = await Stocktracking.create({
+                        'stockId': resp.dataValues.id,
+                        'beforeQuantity': resp.dataValues.currentQuantity,
+                        'used': req.body.quantity,
+                        'userId': req.body.userId,
+                    }).then(resps => {
+                        res.send({ status: 'success' });
+                        next();
+                    }).catch((err) => {
+                        console.log(err);
+                        res.send({ status: 'fail' });
+                        next();
+                    });
+                }
+            }).catch((err) => {
+                console.log(err);
+                res.send({ status: 'fail' });
+                next();
+            });
+        } catch (err) {
+            console.log(err);
             return next(new errors.InternalError(err));
         }
     });
