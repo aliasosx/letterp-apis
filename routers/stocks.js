@@ -10,6 +10,8 @@ const Product = require('../models/product');
 const Unit = require('../models/unit');
 const Stock = require('../models/stock');
 const Stocktracking = require('../models/Stocktracking');
+const Stockhistory = require('../models/Stockhistory');
+
 
 module.exports = server => {
     server.get('/producttypes', async (req, res, next) => {
@@ -146,7 +148,6 @@ module.exports = server => {
         try {
             const c = await Stock.findAll({
                 where: {
-                    enabled: true,
                     productId: req.params.prodId
                 }
             }).then(resp => {
@@ -209,6 +210,22 @@ module.exports = server => {
                         next();
                     });
                 }
+            }).catch((err) => {
+                console.log(err);
+                res.send({ status: 'fail' });
+                next();
+            });
+        } catch (err) {
+            console.log(err);
+            return next(new errors.InternalError(err));
+        }
+    });
+    server.post('/stockupdate', async (req, res, next) => {
+        try {
+            const c = await Stockhistory.create(req.body).then((resp) => {
+                console.log(resp);
+                res.send({ status: 'success' });
+                next();
             }).catch((err) => {
                 console.log(err);
                 res.send({ status: 'fail' });
