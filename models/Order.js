@@ -59,6 +59,14 @@ const Order = sequelize.define('order', {
         type: Sequelize.BOOLEAN,
         allowNull: true,
         defaultValue: false
+    },
+    'paymenttypeId': {
+        type: Sequelize.INTEGER,
+        allowNull: true
+    },
+    'bankId': {
+        type: Sequelize.STRING,
+        allowNull: true
     }
 });
 Order.belongsTo(User);

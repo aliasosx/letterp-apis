@@ -14,12 +14,12 @@ const Customer = require('../models/Customer');
 module.exports = server => {
     server.post('/makeorders', async (req, res, next) => {
         console.log(req.body);
-        const { quantity, grandtotal, ticketId, statusId, userId, orderdetail, customerId, received, change } = req.body;
+        const { quantity, grandtotal, ticketId, statusId, userId, orderdetail, customerId, received, change, paymenttypeId, responseData, bankId } = req.body;
         // add Order 
 
         try {
             const o = await Order.create({
-                quantity, grandtotal, ticketId, statusId, userId, customerId, received, change
+                quantity, grandtotal, ticketId, statusId, userId, customerId, received, change, paymenttypeId, bankId
             }).then((order) => {
                 //console.log(JSON.parse(orderdetail));
                 console.log('-------------------- Order posted --------------------');
