@@ -2,7 +2,7 @@ const sequelize = require('../db/connectionInitializer');
 const Sequelize = require('sequelize');
 const User = require('./User');
 const Vendor = require('./vendor');
-const Product = require('./Product');
+const Product = require('./product');
 
 const Purchase = sequelize.define('purchase', {
     refno: {
